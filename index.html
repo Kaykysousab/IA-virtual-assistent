@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/estilo/form.css">
+    <title>CONSELHEIRO VIRTUAL</title>
+</head>
+<body>
+<div class="container">
+    <div class="image">
+        <img class="imglogin" src="https://blush.design/api/download?shareUri=fAZjMM3eQnUImG0-&c=Hair_0%7E3164cf-0.1%7E3164cf_Skin_0%7Eef9e89-0.1%7E8c72cb&w=800&h=800&fm=png" alt="">
+    </div>
+
+    <div>
+        <h2>Formulário para Emocional dos Estudantes na Escola</h2>
+        <form id="emotionForm">
+            <div class="form-group">
+                <label for="name">Nome:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="age">Idade:</label>
+                <input type="number" id="age" name="age" required>
+            </div>
+            <div class="form-group">
+                <label for="gender">Sexo:</label>
+                <select id="gender" name="gender" required>
+                    <option value="male">Masculino</option>
+                    <option value="female">Feminino</option>
+                    <option value="other">Outro</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="needs">Descreva suas necessidades emocionais na escola:</label>
+                <textarea id="needs" name="needs" rows="4" required></textarea>
+            </div>
+            <button type="submit">Enviar</button> <!-- Adiciona o botão de enviar -->
+        </form>
+    </div>
+</div>
+<script src="./assets/script/form.js"></script>
+</body>
+</html>

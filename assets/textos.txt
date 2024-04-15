@@ -1,0 +1,169 @@
+No entanto, é importante lembrar que um assistente de saúde mental baseado em IA como o CONSELHEIRO VIRTUAL não substitui o aconselhamento ou tratamento médico profissional. Mais deve ser usado como uma ferramenta complementar e para fornecer suporte adicional aos usuários. Além disso, é essencial garantir a privacidade e a segurança dos dados dos usuários ao implementar um assistente de saúde mental online.
+
+
+
+
+const chatbox = document.getElementById("history");
+const chatInput = document.getElementById("message-input");
+
+let userMessage = null; // Variable to store user's message
+
+const createChatDiv = (message, className) => {
+    // Create a chat <div> element with passed message and className
+    const chatDiv = document.createElement("div");
+    const chatContent = className === "outgoing" ? `<p>${message}</p>` : `<span class="material-icons">smart_toy</span><p>${message}</p>`;
+    chatDiv.innerHTML = chatContent;
+    return chatDiv; // return chat <div> element
+}
+
+const generateResponse = () => {
+    const API_KEY = "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"; // Your API key here
+    const API_URL = "https://api.openai.com/v1/chat/completions";
+    const requestOptions = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${API_KEY}`
+        },
+        body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [{role: "user", content: userMessage}],
+        })
+    }
+
+    // Send POST request to API, get response and append it to chatbox
+    fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+        const responseMessage = data.choices[0].message.content.trim();
+        chatbox.appendChild(createChatDiv(responseMessage, "incoming"));
+        chatbox.scrollTo(0, chatbox.scrollHeight);
+    }).catch(() => {
+        chatbox.appendChild(createChatDiv("Oops! Something went wrong. Please try again.", "incoming error"));
+        chatbox.scrollTo(0, chatbox.scrollHeight);
+    });
+}
+
+const handleChat = () => {
+    userMessage = chatInput.value.trim(); // Get user entered message and remove extra whitespace
+    if(!userMessage) return;
+
+    // Append the user's message to the chatbox
+    chatbox.appendChild(createChatDiv(userMessage, "outgoing"));
+    chatbox.scrollTo(0, chatbox.scrollHeight);
+    
+    setTimeout(() => {
+        // Display "Thinking..." message while waiting for the response
+        chatbox.appendChild(createChatDiv("Thinking...", "incoming"));
+        chatbox.scrollTo(0, chatbox.scrollHeight);
+        generateResponse();
+    }, 600);
+
+    // Clear input field after sending message
+    chatInput.value = "";
+}
+
+// Event listener for sending message
+document.getElementById("btn-submit").addEventListener("click", handleChat);
+
+// Event listener for pressing Enter key
+chatInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        handleChat();
+    }
+});
+
+
+
+
+const chatbox = document.getElementById("history");
+const chatInput = document.getElementById("message-input");
+
+let userMessage = null; // Variable to store user's message
+
+const createMessageElement = (message, className, iconClass) => {
+    // Create a <p> element with the message content
+    const messageParagraph = document.createElement("p");
+    messageParagraph.textContent = message;
+
+    // Create a <span> element for the avatar icon
+    const iconSpan = document.createElement("span");
+    iconSpan.classList.add("avatar-icon");
+    iconSpan.innerHTML = `<i class="material-icons">${iconClass}</i>`;
+
+    // Create a <div> element with the specified className
+    const messageDiv = document.createElement("div");
+    messageDiv.classList.add(className);
+
+    // Append the <span> element with the icon to the message <div>
+    messageDiv.appendChild(iconSpan);
+
+    // Append the <p> element with the message content to the message <div>
+    messageDiv.appendChild(messageParagraph);
+
+    // Return the message <div>
+    return messageDiv;
+}
+
+const removeThinkingMessage = () => {
+    const thinkingMessage = document.querySelector(".thinking-message");
+    if (thinkingMessage) {
+        thinkingMessage.remove();
+    }
+}
+
+const generateResponse = () => {
+    const API_KEY = "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"; // Your API key here
+    const API_URL = "https://api.openai.com/v1/chat/completions";
+    const requestOptions = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${API_KEY}`
+        },
+        body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [{role: "user", content: userMessage}],
+        })
+    }
+
+    // Send POST request to API, get response and append it to chatbox
+    fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+        const responseMessage = data.choices[0].message.content.trim();
+        removeThinkingMessage(); // Remove the "Thinking..." message
+        chatbox.appendChild(createMessageElement(responseMessage, "bot-message", "smart_toy"));
+        chatbox.scrollTo(0, chatbox.scrollHeight);
+    }).catch(() => {
+        chatbox.appendChild(createMessageElement("Oops! Something went wrong. Please try again.", "bot-message error", "error"));
+        chatbox.scrollTo(0, chatbox.scrollHeight);
+        removeThinkingMessage(); // Remove the "Thinking..." message
+    });
+}
+
+const handleChat = () => {
+    userMessage = chatInput.value.trim(); // Get user entered message and remove extra whitespace
+    if(!userMessage) return;
+
+    // Append the user's message to the chatbox
+    chatbox.appendChild(createMessageElement(userMessage, "user-message", "person"));
+    chatbox.scrollTo(0, chatbox.scrollHeight);
+
+    setTimeout(() => {
+        // Generate response after a short delay to simulate thinking time
+        generateResponse();
+    }, 600);
+
+    // Clear input field after sending message
+    chatInput.value = "";
+}
+
+// Event listener for sending message
+document.getElementById("btn-submit").addEventListener("click", handleChat);
+
+// Event listener for pressing Enter key
+chatInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        handleChat();
+    }
+});
+
